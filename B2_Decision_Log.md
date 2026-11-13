@@ -27,7 +27,9 @@
 
 **Note on F06 ("Agent sounds robotic"):** This feedback sheet entry was deliberately excluded from the prototype's issue list. It has no call ID, no severity, and no specific transcript reference — it is exactly the kind of vague report the product's structured form (mandatory call ID, severity dropdown) is designed to prevent. In a real implementation, Anjali would be prompted to re-submit with a specific call and transcript lines.
 
-**Note on ISS-003 / F03 ("Pushes payment link after customer said already paid"):** The feedback sheet marks this "Fixed" but Karthik's email (E2) only confirms fixes for #1 and #2, and addresses #4. He never confirmed #3. The prototype shows ISS-003 as Open — this is a conscious decision to reflect what was actually confirmed, not what the sheet assumed.
+**Note on ISS-003 / F03 ("Pushes payment link after customer said already paid"):** The feedback sheet marks this "Fixed" but Karthik's email (E2) only confirms fixes for #1 and #2, and addresses #4. He never mentioned #3. The prototype shows ISS-003 as Open — reflecting what was actually confirmed, not what the sheet assumed.
+
+**Note on ISS-006 / F09 ("Callback not logged"):** F09 was listed as Medium in the feedback sheet. I bumped it to High because a missing callback means a customer who asked to speak to a person never gets called back — that's a customer experience failure, not a minor data issue. If the agent promises something and the system doesn't record it, that's a broken contract with the policyholder.
 
 ---
 

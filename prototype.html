@@ -948,12 +948,12 @@
         <div class="stats-row">
           <div class="stat-card danger">
             <div class="stat-label">Open Blockers</div>
-            <div class="stat-value">4</div>
+            <div class="stat-value">5</div>
             <div class="stat-detail">Critical + High severity</div>
           </div>
           <div class="stat-card warning">
             <div class="stat-label">Awaiting Retest</div>
-            <div class="stat-value">1</div>
+            <div class="stat-value">0</div>
             <div class="stat-detail">Fix shipped, needs verification</div>
           </div>
           <div class="stat-card success">
@@ -1141,7 +1141,7 @@
           <div class="call-card active" onclick="selectCall('T1', this)" id="call-T1">
             <div class="call-id">UAT-0142</div>
             <div class="call-meta">2 Nov &middot; Sameer Khan &middot; English</div>
-            <div class="call-meta" style="color:var(--danger);font-weight:600;">2 issues found</div>
+            <div class="call-meta" style="color:var(--danger);font-weight:600;">1 issue found</div>
           </div>
           <div class="call-card" onclick="selectCall('T2', this)" id="call-T2">
             <div class="call-id">UAT-0157</div>
@@ -1151,7 +1151,7 @@
           <div class="call-card" onclick="selectCall('T3', this)" id="call-T3">
             <div class="call-id">UAT-0163</div>
             <div class="call-meta">4 Nov &middot; Priya Nair &middot; Hindi-English</div>
-            <div class="call-meta" style="color:var(--danger);font-weight:600;">3 issues found</div>
+            <div class="call-meta" style="color:var(--danger);font-weight:600;">2 issues found</div>
           </div>
         </div>
 
@@ -1676,7 +1676,7 @@
           <div class="icon">&#9888;</div>
           <div class="text">
             <h4>NOT READY FOR GO-LIVE</h4>
-            <p>4 critical/high open issues remain. 1 compliance item needs review.</p>
+            <p>5 critical/high open issues remain. 1 compliance item needs review.</p>
           </div>
         </div>
 
@@ -1685,7 +1685,7 @@
           <div>
             <div class="card" style="margin-bottom:20px;">
               <div class="card-header" style="background:var(--danger-light);">
-                <h3 style="color:var(--danger);">Open Blockers (4)</h3>
+                <h3 style="color:var(--danger);">Open Blockers (5)</h3>
               </div>
               <div class="card-body">
                 <ul class="blocker-list">
@@ -1708,6 +1708,13 @@
                     <div>
                       <div style="font-weight:700;font-size:13px;">ISS-005: Wrong disposition recorded</div>
                       <div style="font-size:11px;color:var(--gray-500);">System says "Payment link sent" when customer refused.</div>
+                    </div>
+                  </li>
+                  <li>
+                    <span class="badge badge-high" style="font-size:10px;">HIGH</span>
+                    <div>
+                      <div style="font-weight:700;font-size:13px;">ISS-006: Callback not logged</div>
+                      <div style="font-size:11px;color:var(--gray-500);">Agent promised callback but post-call data blank.</div>
                     </div>
                   </li>
                   <li>
@@ -1759,7 +1766,7 @@
                 <div style="margin-bottom:12px;">
                   <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px;">
                     <span style="color:var(--gray-500);">Critical issues</span>
-                    <span style="font-weight:700;color:var(--danger);">0 / 4 resolved</span>
+                    <span style="font-weight:700;color:var(--danger);">0 / 3 resolved</span>
                   </div>
                   <div class="progress-bar">
                     <div class="progress-fill" style="width:0%;background:var(--danger);"></div>
