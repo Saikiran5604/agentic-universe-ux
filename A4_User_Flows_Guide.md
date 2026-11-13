@@ -1,5 +1,4 @@
-# A4 User Flows — Drawing Guide
-(Draw these by hand on paper, photograph them)
+# A4 User Flows
 
 ## Core Flow: Report → Track → Retest → Sign Off
 

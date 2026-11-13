@@ -37,4 +37,4 @@
 - **Flows & IA:** Hand-drawn on paper, photographed.
 
 ## Changes After Lock
-None. (Phase A plan was followed as locked.)
+None.

@@ -1,5 +1,4 @@
 # A2 Tracker Content
-(Copy each section into the corresponding tab of the Excel/Google Sheet tracker)
 
 ---
 
@@ -167,7 +166,6 @@
 ---
 
 ## TAB: Change Log
-(Empty at Phase A submission — to be filled during Phase B if any changes are made after lock)
 
 | Date | What Changed | Reason |
 |------|-------------|--------|

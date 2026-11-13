@@ -10,9 +10,9 @@
 |----|------------|------|
 | A1 | Research Synthesis | `A1_Research_Synthesis.md` |
 | A2 | Tracker Content | `A2_Tracker_Content.md` |
-| A3 | Sitemap / IA | *(hand-drawn, photographed)* |
+| A3 | Sitemap / IA | *(paper, scanned)* |
 | A4 | User Flows Guide | `A4_User_Flows_Guide.md` |
-| A5 | Rough Work | *(photos of paper sketches)* |
+| A5 | Rough Work | *(paper, scanned)* |
 
 ### Phase B — Building (10%)
 | ID | Deliverable | File |
