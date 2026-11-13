@@ -1,0 +1,2000 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Asha UAT Tracker</title>
+<style>
+  :root {
+    --primary: #1a56db;
+    --primary-light: #e1effe;
+    --danger: #dc2626;
+    --danger-light: #fef2f2;
+    --warning: #f59e0b;
+    --warning-light: #fffbeb;
+    --success: #16a34a;
+    --success-light: #f0fdf4;
+    --info: #6366f1;
+    --info-light: #eef2ff;
+    --gray-50: #f9fafb;
+    --gray-100: #f3f4f6;
+    --gray-200: #e5e7eb;
+    --gray-300: #d1d5db;
+    --gray-400: #9ca3af;
+    --gray-500: #6b7280;
+    --gray-600: #4b5563;
+    --gray-700: #374151;
+    --gray-800: #1f2937;
+    --gray-900: #111827;
+    --bg: #ffffff;
+    --sidebar-bg: #111827;
+    --sidebar-text: #d1d5db;
+    --sidebar-active: #1a56db;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: var(--gray-50);
+    color: var(--gray-800);
+    min-height: 100vh;
+  }
+
+  .app {
+    display: flex;
+    min-height: 100vh;
+  }
+
+  /* Sidebar */
+  .sidebar {
+    width: 240px;
+    background: var(--sidebar-bg);
+    color: var(--sidebar-text);
+    padding: 24px 0;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .sidebar-logo {
+    padding: 0 20px 24px;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    margin-bottom: 16px;
+  }
+
+  .sidebar-logo h1 {
+    font-size: 18px;
+    color: #fff;
+    font-weight: 700;
+  }
+
+  .sidebar-logo p {
+    font-size: 11px;
+    color: var(--gray-400);
+    margin-top: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .sidebar-nav {
+    list-style: none;
+    flex: 1;
+  }
+
+  .sidebar-nav li {
+    padding: 10px 20px;
+    cursor: pointer;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: background 0.15s;
+    border-left: 3px solid transparent;
+  }
+
+  .sidebar-nav li:hover {
+    background: rgba(255,255,255,0.05);
+  }
+
+  .sidebar-nav li.active {
+    background: rgba(26, 86, 219, 0.15);
+    color: #fff;
+    border-left-color: var(--primary);
+  }
+
+  .sidebar-nav li .icon {
+    width: 18px;
+    text-align: center;
+    font-size: 15px;
+  }
+
+  .sidebar-user {
+    padding: 16px 20px;
+    border-top: 1px solid rgba(255,255,255,0.1);
+    font-size: 13px;
+  }
+
+  .sidebar-user .name {
+    color: #fff;
+    font-weight: 600;
+  }
+
+  .sidebar-user .role {
+    color: var(--gray-400);
+    font-size: 11px;
+  }
+
+  /* Main content */
+  .main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow-x: hidden;
+  }
+
+  .topbar {
+    background: var(--bg);
+    border-bottom: 1px solid var(--gray-200);
+    padding: 16px 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .topbar h2 {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--gray-900);
+  }
+
+  .topbar-actions {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+  }
+
+  .content {
+    padding: 24px 32px;
+    flex: 1;
+  }
+
+  /* Screen ID label */
+  .screen-id {
+    position: fixed;
+    bottom: 12px;
+    right: 12px;
+    background: var(--gray-800);
+    color: #fff;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 4px;
+    z-index: 999;
+    font-family: monospace;
+  }
+
+  /* Buttons */
+  .btn {
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    transition: all 0.15s;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .btn-primary {
+    background: var(--primary);
+    color: #fff;
+  }
+
+  .btn-primary:hover { background: #1e40af; }
+
+  .btn-secondary {
+    background: var(--bg);
+    color: var(--gray-700);
+    border: 1px solid var(--gray-300);
+  }
+
+  .btn-secondary:hover { background: var(--gray-50); }
+
+  .btn-success {
+    background: var(--success);
+    color: #fff;
+  }
+
+  .btn-success:hover { background: #15803d; }
+
+  .btn-danger {
+    background: var(--danger);
+    color: #fff;
+  }
+
+  .btn-danger:hover { background: #b91c1c; }
+
+  .btn-sm {
+    padding: 5px 10px;
+    font-size: 12px;
+  }
+
+  /* Cards */
+  .card {
+    background: var(--bg);
+    border: 1px solid var(--gray-200);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+
+  .card-header {
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--gray-200);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .card-header h3 {
+    font-size: 15px;
+    font-weight: 700;
+  }
+
+  .card-body {
+    padding: 20px;
+  }
+
+  /* Stat cards */
+  .stats-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+
+  .stat-card {
+    background: var(--bg);
+    border: 1px solid var(--gray-200);
+    border-radius: 8px;
+    padding: 16px 20px;
+  }
+
+  .stat-card .stat-label {
+    font-size: 12px;
+    color: var(--gray-500);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-weight: 600;
+  }
+
+  .stat-card .stat-value {
+    font-size: 28px;
+    font-weight: 800;
+    margin: 4px 0;
+  }
+
+  .stat-card .stat-detail {
+    font-size: 12px;
+    color: var(--gray-500);
+  }
+
+  .stat-card.danger .stat-value { color: var(--danger); }
+  .stat-card.warning .stat-value { color: var(--warning); }
+  .stat-card.success .stat-value { color: var(--success); }
+  .stat-card.info .stat-value { color: var(--info); }
+
+  /* Table */
+  .table-wrap {
+    overflow-x: auto;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  table th {
+    text-align: left;
+    padding: 10px 16px;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--gray-500);
+    font-weight: 700;
+    background: var(--gray-50);
+    border-bottom: 1px solid var(--gray-200);
+  }
+
+  table td {
+    padding: 12px 16px;
+    font-size: 13px;
+    border-bottom: 1px solid var(--gray-100);
+    vertical-align: middle;
+  }
+
+  table tr:hover td { background: var(--gray-50); }
+
+  table tr { cursor: pointer; }
+
+  /* Badges */
+  .badge {
+    display: inline-block;
+    padding: 3px 8px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+  }
+
+  .badge-critical { background: #fef2f2; color: #991b1b; }
+  .badge-high { background: #fff7ed; color: #9a3412; }
+  .badge-medium { background: #fffbeb; color: #92400e; }
+  .badge-low { background: #f0fdf4; color: #166534; }
+
+  .badge-open { background: #fef2f2; color: #991b1b; }
+  .badge-in-progress { background: #fffbeb; color: #92400e; }
+  .badge-fixed { background: #e1effe; color: #1e40af; }
+  .badge-verified { background: #f0fdf4; color: #166534; }
+  .badge-reopened { background: #fef2f2; color: #991b1b; border: 1px solid #fecaca; }
+
+  .badge-compliance { background: #faf5ff; color: #6b21a8; }
+  .badge-data { background: #eff6ff; color: #1d4ed8; }
+  .badge-conversation { background: #fefce8; color: #854d0e; }
+  .badge-audio { background: #f0fdfa; color: #115e59; }
+  .badge-postcall { background: #fff1f2; color: #9f1239; }
+
+  /* Filters */
+  .filters {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+
+  .filter-group {
+    display: flex;
+    gap: 4px;
+  }
+
+  .filter-btn {
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    border: 1px solid var(--gray-300);
+    background: var(--bg);
+    color: var(--gray-600);
+    transition: all 0.15s;
+  }
+
+  .filter-btn:hover, .filter-btn.active {
+    background: var(--primary);
+    color: #fff;
+    border-color: var(--primary);
+  }
+
+  /* Transcript */
+  .transcript {
+    background: var(--gray-50);
+    border: 1px solid var(--gray-200);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+
+  .transcript-header {
+    padding: 12px 16px;
+    background: var(--gray-100);
+    border-bottom: 1px solid var(--gray-200);
+    font-size: 13px;
+    font-weight: 700;
+  }
+
+  .transcript-line {
+    padding: 10px 16px;
+    border-bottom: 1px solid var(--gray-100);
+    display: flex;
+    gap: 12px;
+    font-size: 13px;
+    line-height: 1.5;
+  }
+
+  .transcript-line:last-child { border-bottom: none; }
+
+  .transcript-line .line-id {
+    font-family: monospace;
+    color: var(--gray-400);
+    font-size: 11px;
+    min-width: 44px;
+    padding-top: 2px;
+  }
+
+  .transcript-line .speaker {
+    font-weight: 700;
+    min-width: 70px;
+    color: var(--gray-700);
+  }
+
+  .transcript-line .speaker.asha { color: var(--primary); }
+  .transcript-line .speaker.customer { color: var(--gray-600); }
+
+  .transcript-line .text { flex: 1; }
+
+  .transcript-line.highlighted {
+    background: #fef3c7;
+    border-left: 3px solid var(--warning);
+  }
+
+  /* Post-call data */
+  .postcall-data {
+    background: var(--bg);
+    border: 1px solid var(--gray-200);
+    border-radius: 8px;
+    padding: 16px;
+  }
+
+  .postcall-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--gray-100);
+    font-size: 13px;
+  }
+
+  .postcall-row:last-child { border-bottom: none; }
+
+  .postcall-row .label {
+    color: var(--gray-500);
+    font-weight: 600;
+    font-size: 12px;
+  }
+
+  .postcall-row .value { font-weight: 600; }
+
+  .postcall-row .value.mismatch {
+    color: var(--danger);
+    background: var(--danger-light);
+    padding: 2px 8px;
+    border-radius: 4px;
+  }
+
+  /* Form */
+  .form-group {
+    margin-bottom: 16px;
+  }
+
+  .form-group label {
+    display: block;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--gray-700);
+    margin-bottom: 6px;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+  }
+
+  .form-group input,
+  .form-group select,
+  .form-group textarea {
+    width: 100%;
+    padding: 9px 12px;
+    border: 1px solid var(--gray-300);
+    border-radius: 6px;
+    font-size: 14px;
+    font-family: inherit;
+    color: var(--gray-800);
+    background: var(--bg);
+  }
+
+  .form-group input:focus,
+  .form-group select:focus,
+  .form-group textarea:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(26, 86, 219, 0.1);
+  }
+
+  .form-group textarea { resize: vertical; min-height: 80px; }
+
+  .form-group .prefilled {
+    background: var(--gray-100);
+    color: var(--gray-600);
+  }
+
+  .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+
+  /* Timeline */
+  .timeline {
+    position: relative;
+    padding-left: 24px;
+  }
+
+  .timeline::before {
+    content: '';
+    position: absolute;
+    left: 7px;
+    top: 4px;
+    bottom: 4px;
+    width: 2px;
+    background: var(--gray-200);
+  }
+
+  .timeline-item {
+    position: relative;
+    padding-bottom: 20px;
+    font-size: 13px;
+  }
+
+  .timeline-item::before {
+    content: '';
+    position: absolute;
+    left: -20px;
+    top: 4px;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--gray-300);
+    border: 2px solid var(--bg);
+  }
+
+  .timeline-item.open::before { background: var(--danger); }
+  .timeline-item.fixed::before { background: var(--primary); }
+  .timeline-item.verified::before { background: var(--success); }
+  .timeline-item.reopened::before { background: var(--warning); }
+
+  .timeline-item .time {
+    font-size: 11px;
+    color: var(--gray-400);
+    margin-bottom: 2px;
+  }
+
+  .timeline-item .event {
+    color: var(--gray-700);
+  }
+
+  .timeline-item .event strong { color: var(--gray-900); }
+
+  /* Duplicate warning */
+  .duplicate-alert {
+    background: #fffbeb;
+    border: 1px solid #fcd34d;
+    border-radius: 8px;
+    padding: 12px 16px;
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    font-size: 13px;
+    margin-bottom: 16px;
+  }
+
+  .duplicate-alert .alert-icon {
+    font-size: 18px;
+    flex-shrink: 0;
+  }
+
+  .duplicate-alert strong { color: #92400e; }
+
+  /* Go-live readiness */
+  .readiness-banner {
+    background: var(--danger-light);
+    border: 1px solid #fecaca;
+    border-radius: 8px;
+    padding: 16px 20px;
+    margin-bottom: 24px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .readiness-banner.ready {
+    background: var(--success-light);
+    border-color: #bbf7d0;
+  }
+
+  .readiness-banner .icon { font-size: 24px; }
+
+  .readiness-banner .text h4 {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--danger);
+  }
+
+  .readiness-banner.ready .text h4 { color: var(--success); }
+
+  .readiness-banner .text p {
+    font-size: 12px;
+    color: var(--gray-600);
+  }
+
+  /* Two-column layout */
+  .two-col {
+    display: grid;
+    grid-template-columns: 1fr 340px;
+    gap: 24px;
+  }
+
+  .two-col-equal {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+  }
+
+  /* Back link */
+  .back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    color: var(--gray-500);
+    text-decoration: none;
+    cursor: pointer;
+    margin-bottom: 16px;
+    font-weight: 600;
+  }
+
+  .back-link:hover { color: var(--primary); }
+
+  /* Hide all screens by default */
+  .screen { display: none; }
+  .screen.active { display: block; }
+
+  /* Compliance flag */
+  .compliance-flag {
+    background: #faf5ff;
+    border: 1px solid #e9d5ff;
+    border-radius: 8px;
+    padding: 12px 16px;
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 16px;
+  }
+
+  .compliance-flag strong { color: #6b21a8; }
+
+  /* Tabs */
+  .tabs {
+    display: flex;
+    gap: 0;
+    border-bottom: 2px solid var(--gray-200);
+    margin-bottom: 20px;
+  }
+
+  .tab {
+    padding: 10px 20px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--gray-500);
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -2px;
+    transition: all 0.15s;
+  }
+
+  .tab:hover { color: var(--gray-700); }
+
+  .tab.active {
+    color: var(--primary);
+    border-bottom-color: var(--primary);
+  }
+
+  /* Empty state */
+  .empty-state {
+    text-align: center;
+    padding: 48px 20px;
+    color: var(--gray-400);
+  }
+
+  .empty-state .icon { font-size: 40px; margin-bottom: 12px; }
+  .empty-state h4 { font-size: 15px; color: var(--gray-600); margin-bottom: 6px; }
+  .empty-state p { font-size: 13px; }
+
+  /* Breadcrumb */
+  .breadcrumb {
+    font-size: 12px;
+    color: var(--gray-400);
+    margin-bottom: 12px;
+  }
+
+  .breadcrumb a {
+    color: var(--gray-500);
+    text-decoration: none;
+    cursor: pointer;
+  }
+
+  .breadcrumb a:hover { color: var(--primary); }
+
+  /* Retest section */
+  .retest-card {
+    border: 2px dashed var(--gray-300);
+    border-radius: 8px;
+    padding: 20px;
+    text-align: center;
+    margin-top: 16px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+
+  .retest-card:hover {
+    border-color: var(--primary);
+    background: var(--primary-light);
+  }
+
+  .retest-card h4 {
+    font-size: 14px;
+    color: var(--gray-700);
+    margin-bottom: 4px;
+  }
+
+  .retest-card p {
+    font-size: 12px;
+    color: var(--gray-500);
+  }
+
+  /* Verdict buttons */
+  .verdict-buttons {
+    display: flex;
+    gap: 16px;
+    margin: 20px 0;
+  }
+
+  .verdict-btn {
+    flex: 1;
+    padding: 20px;
+    border-radius: 8px;
+    border: 2px solid var(--gray-200);
+    background: var(--bg);
+    cursor: pointer;
+    text-align: center;
+    transition: all 0.15s;
+  }
+
+  .verdict-btn:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
+
+  .verdict-btn .icon { font-size: 32px; margin-bottom: 8px; }
+
+  .verdict-btn .label {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--gray-700);
+  }
+
+  .verdict-btn .desc {
+    font-size: 12px;
+    color: var(--gray-500);
+    margin-top: 4px;
+  }
+
+  .verdict-btn.selected-pass {
+    border-color: var(--success);
+    background: var(--success-light);
+  }
+
+  .verdict-btn.selected-fail {
+    border-color: var(--danger);
+    background: var(--danger-light);
+  }
+
+  /* Linked issues */
+  .linked-issue {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    background: var(--gray-50);
+    border-radius: 6px;
+    margin-bottom: 8px;
+    font-size: 13px;
+    cursor: pointer;
+  }
+
+  .linked-issue:hover { background: var(--gray-100); }
+
+  /* Call selector */
+  .call-selector {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+
+  .call-card {
+    flex: 1;
+    padding: 12px 16px;
+    border: 2px solid var(--gray-200);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+
+  .call-card:hover { border-color: var(--gray-400); }
+
+  .call-card.active {
+    border-color: var(--primary);
+    background: var(--primary-light);
+  }
+
+  .call-card .call-id {
+    font-weight: 700;
+    font-size: 14px;
+    color: var(--gray-800);
+  }
+
+  .call-card .call-meta {
+    font-size: 11px;
+    color: var(--gray-500);
+    margin-top: 4px;
+  }
+
+  /* Go-live section */
+  .blocker-list {
+    list-style: none;
+  }
+
+  .blocker-list li {
+    padding: 10px 0;
+    border-bottom: 1px solid var(--gray-100);
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .blocker-list li:last-child { border-bottom: none; }
+
+  /* Mismatch highlight */
+  .mismatch-row {
+    background: #fef2f2 !important;
+  }
+
+  .mismatch-icon {
+    color: var(--danger);
+    font-weight: 700;
+  }
+
+  /* Toast notification */
+  .toast {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: var(--gray-800);
+    color: #fff;
+    padding: 12px 20px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    z-index: 9999;
+    display: none;
+    animation: slideIn 0.3s ease;
+  }
+
+  .toast.success { background: var(--success); }
+
+  @keyframes slideIn {
+    from { transform: translateX(100%); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+  }
+
+  /* Progress bar */
+  .progress-bar {
+    height: 8px;
+    background: var(--gray-200);
+    border-radius: 4px;
+    overflow: hidden;
+    margin-top: 8px;
+  }
+
+  .progress-fill {
+    height: 100%;
+    border-radius: 4px;
+    transition: width 0.3s;
+  }
+</style>
+</head>
+<body>
+
+<div class="app">
+  <!-- Sidebar -->
+  <nav class="sidebar">
+    <div class="sidebar-logo">
+      <h1>Asha UAT</h1>
+      <p>Northstar Life Insurance</p>
+    </div>
+    <ul class="sidebar-nav">
+      <li class="active" onclick="showScreen('dashboard')">
+        <span class="icon">&#9632;</span> Dashboard
+      </li>
+      <li onclick="showScreen('calls')">
+        <span class="icon">&#9742;</span> Test Calls
+      </li>
+      <li onclick="showScreen('report')">
+        <span class="icon">&#10010;</span> Report Issue
+      </li>
+      <li onclick="showScreen('readiness')">
+        <span class="icon">&#9888;</span> Go-Live Readiness
+      </li>
+    </ul>
+    <div class="sidebar-user">
+      <div class="name">Priya Nair</div>
+      <div class="role">UAT Lead, Renewals Ops</div>
+    </div>
+  </nav>
+
+  <!-- Main -->
+  <div class="main">
+
+    <!-- ===== S01: DASHBOARD ===== -->
+    <div class="screen active" id="screen-dashboard">
+      <div class="topbar">
+        <h2>Issue Dashboard</h2>
+        <div class="topbar-actions">
+          <button class="btn btn-secondary" onclick="showScreen('readiness')">Go-Live Status</button>
+          <button class="btn btn-primary" onclick="showScreen('report')">+ Report Issue</button>
+        </div>
+      </div>
+      <div class="content">
+        <div class="screen-id">S01</div>
+
+        <!-- Stats -->
+        <div class="stats-row">
+          <div class="stat-card danger">
+            <div class="stat-label">Open Blockers</div>
+            <div class="stat-value">4</div>
+            <div class="stat-detail">Critical + High severity</div>
+          </div>
+          <div class="stat-card warning">
+            <div class="stat-label">Awaiting Retest</div>
+            <div class="stat-value">1</div>
+            <div class="stat-detail">Fix shipped, needs verification</div>
+          </div>
+          <div class="stat-card success">
+            <div class="stat-label">Verified Fixed</div>
+            <div class="stat-value">2</div>
+            <div class="stat-detail">Tested and confirmed</div>
+          </div>
+          <div class="stat-card info">
+            <div class="stat-label">Total Issues</div>
+            <div class="stat-value">8</div>
+            <div class="stat-detail">Across 3 test sessions</div>
+          </div>
+        </div>
+
+        <!-- Filters -->
+        <div class="filters">
+          <span style="font-size:12px;font-weight:700;color:var(--gray-500);">STATUS:</span>
+          <div class="filter-group">
+            <button class="filter-btn active" onclick="filterIssues('all', this)">All</button>
+            <button class="filter-btn" onclick="filterIssues('open', this)">Open</button>
+            <button class="filter-btn" onclick="filterIssues('reopened', this)">Reopened</button>
+            <button class="filter-btn" onclick="filterIssues('fixed', this)">Fixed</button>
+            <button class="filter-btn" onclick="filterIssues('verified', this)">Verified</button>
+          </div>
+        </div>
+
+        <!-- Issue table -->
+        <div class="card">
+          <div class="table-wrap">
+            <table id="issue-table">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Issue</th>
+                  <th>Category</th>
+                  <th>Severity</th>
+                  <th>Status</th>
+                  <th>Call</th>
+                  <th>Reporter</th>
+                  <th>Date</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr onclick="showScreen('issue-detail', 'ISS-001')" data-status="reopened">
+                  <td style="font-weight:700;font-family:monospace;">ISS-001</td>
+                  <td>
+                    <strong>Wrong due date read out to customer</strong>
+                    <div style="font-size:11px;color:var(--gray-500);margin-top:2px;">
+                      Asha reads date in MM/DD instead of DD/MM, says "March 5th" instead of "3rd May"
+                    </div>
+                  </td>
+                  <td><span class="badge badge-data">Data</span></td>
+                  <td><span class="badge badge-critical">Critical</span></td>
+                  <td><span class="badge badge-reopened">Reopened</span></td>
+                  <td style="font-family:monospace;font-size:12px;">UAT-0142</td>
+                  <td>Priya</td>
+                  <td style="font-size:12px;color:var(--gray-500);">2 Nov</td>
+                </tr>
+                <tr onclick="showScreen('issue-detail', 'ISS-002')" data-status="verified">
+                  <td style="font-weight:700;font-family:monospace;">ISS-002</td>
+                  <td>
+                    <strong>Hindi speech too fast</strong>
+                    <div style="font-size:11px;color:var(--gray-500);margin-top:2px;">
+                      Agent speaks at unnatural speed in Hindi language calls
+                    </div>
+                  </td>
+                  <td><span class="badge badge-audio">Audio</span></td>
+                  <td><span class="badge badge-medium">Medium</span></td>
+                  <td><span class="badge badge-verified">Verified</span></td>
+                  <td style="font-family:monospace;font-size:12px;">UAT-0150</td>
+                  <td>Priya</td>
+                  <td style="font-size:12px;color:var(--gray-500);">2 Nov</td>
+                </tr>
+                <tr onclick="showScreen('issue-detail', 'ISS-003')" data-status="open">
+                  <td style="font-weight:700;font-family:monospace;">ISS-003</td>
+                  <td>
+                    <strong>Pushes payment link after customer says already paid</strong>
+                    <div style="font-size:11px;color:var(--gray-500);margin-top:2px;">
+                      Agent ignores "I paid" and keeps offering link; customer frustrated
+                    </div>
+                  </td>
+                  <td><span class="badge badge-conversation">Flow</span></td>
+                  <td><span class="badge badge-critical">Critical</span></td>
+                  <td><span class="badge badge-open">Open</span></td>
+                  <td style="font-family:monospace;font-size:12px;">UAT-0157</td>
+                  <td>Priya</td>
+                  <td style="font-size:12px;color:var(--gray-500);">2 Nov</td>
+                </tr>
+                <tr onclick="showScreen('issue-detail', 'ISS-004')" data-status="verified">
+                  <td style="font-weight:700;font-family:monospace;">ISS-004</td>
+                  <td>
+                    <strong>Closing line cuts off customer</strong>
+                    <div style="font-size:11px;color:var(--gray-500);margin-top:2px;">
+                      End-of-call wait time too short, agent talks over customer
+                    </div>
+                  </td>
+                  <td><span class="badge badge-audio">Audio</span></td>
+                  <td><span class="badge badge-low">Low</span></td>
+                  <td><span class="badge badge-verified">Verified</span></td>
+                  <td style="font-family:monospace;font-size:12px;">UAT-0149</td>
+                  <td>Priya</td>
+                  <td style="font-size:12px;color:var(--gray-500);">2 Nov</td>
+                </tr>
+                <tr onclick="showScreen('issue-detail', 'ISS-005')" data-status="open">
+                  <td style="font-weight:700;font-family:monospace;">ISS-005</td>
+                  <td>
+                    <strong style="color:var(--danger);">Post-call disposition wrong: says "Payment link sent" but customer refused</strong>
+                    <div style="font-size:11px;color:var(--gray-500);margin-top:2px;">
+                      <span class="mismatch-icon">!</span> T2-POST: disposition "Payment link sent" but customer said "don't call again" and no link was sent
+                    </div>
+                  </td>
+                  <td><span class="badge badge-postcall">Post-call</span></td>
+                  <td><span class="badge badge-high">High</span></td>
+                  <td><span class="badge badge-open">Open</span></td>
+                  <td style="font-family:monospace;font-size:12px;">UAT-0157</td>
+                  <td>Priya</td>
+                  <td style="font-size:12px;color:var(--gray-500);">4 Nov</td>
+                </tr>
+                <tr onclick="showScreen('issue-detail', 'ISS-006')" data-status="open">
+                  <td style="font-weight:700;font-family:monospace;">ISS-006</td>
+                  <td>
+                    <strong>Callback not logged in system after agent promised one</strong>
+                    <div style="font-size:11px;color:var(--gray-500);margin-top:2px;">
+                      Agent said "I'll arrange callback" but post-call data shows callback_requested = blank
+                    </div>
+                  </td>
+                  <td><span class="badge badge-postcall">Post-call</span></td>
+                  <td><span class="badge badge-high">High</span></td>
+                  <td><span class="badge badge-open">Open</span></td>
+                  <td style="font-family:monospace;font-size:12px;">UAT-0163</td>
+                  <td>Priya</td>
+                  <td style="font-size:12px;color:var(--gray-500);">4 Nov</td>
+                </tr>
+                <tr onclick="showScreen('issue-detail', 'ISS-007')" data-status="open">
+                  <td style="font-weight:700;font-family:monospace;">ISS-007</td>
+                  <td>
+                    <strong>Missing recording disclosure on Hindi call</strong>
+                    <div style="font-size:11px;color:var(--gray-500);margin-top:2px;">
+                      <span class="badge badge-compliance">Compliance</span> Mandatory "call is recorded" disclosure absent in T3
+                    </div>
+                  </td>
+                  <td><span class="badge badge-compliance">Compliance</span></td>
+                  <td><span class="badge badge-critical">Critical</span></td>
+                  <td><span class="badge badge-open">Open</span></td>
+                  <td style="font-family:monospace;font-size:12px;">UAT-0163</td>
+                  <td>Priya</td>
+                  <td style="font-size:12px;color:var(--gray-500);">4 Nov</td>
+                </tr>
+                <tr onclick="showScreen('issue-detail', 'ISS-008')" data-status="open">
+                  <td style="font-weight:700;font-family:monospace;">ISS-008</td>
+                  <td>
+                    <strong>Agent doesn't capture "don't call again" as DNC</strong>
+                    <div style="font-size:11px;color:var(--gray-500);margin-top:2px;">
+                      Customer says "don't call me again" but no DNC disposition recorded
+                    </div>
+                  </td>
+                  <td><span class="badge badge-conversation">Flow</span></td>
+                  <td><span class="badge badge-high">High</span></td>
+                  <td><span class="badge badge-open">Open</span></td>
+                  <td style="font-family:monospace;font-size:12px;">UAT-0172</td>
+                  <td>Anjali</td>
+                  <td style="font-size:12px;color:var(--gray-500);">4 Nov</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== S02: TEST CALLS ===== -->
+    <div class="screen" id="screen-calls">
+      <div class="topbar">
+        <h2>Test Call Review</h2>
+        <div class="topbar-actions">
+          <button class="btn btn-primary" onclick="reportFromCall()">Report Issue from This Call</button>
+        </div>
+      </div>
+      <div class="content">
+        <div class="screen-id">S02</div>
+        <span class="back-link" onclick="showScreen('dashboard')">&larr; Back to Dashboard</span>
+
+        <!-- Call selector -->
+        <div class="call-selector">
+          <div class="call-card active" onclick="selectCall('T1', this)" id="call-T1">
+            <div class="call-id">UAT-0142</div>
+            <div class="call-meta">2 Nov &middot; Sameer Khan &middot; English</div>
+            <div class="call-meta" style="color:var(--danger);font-weight:600;">2 issues found</div>
+          </div>
+          <div class="call-card" onclick="selectCall('T2', this)" id="call-T2">
+            <div class="call-id">UAT-0157</div>
+            <div class="call-meta">2 Nov &middot; Anjali Rao &middot; English</div>
+            <div class="call-meta" style="color:var(--danger);font-weight:600;">2 issues found</div>
+          </div>
+          <div class="call-card" onclick="selectCall('T3', this)" id="call-T3">
+            <div class="call-id">UAT-0163</div>
+            <div class="call-meta">4 Nov &middot; Priya Nair &middot; Hindi-English</div>
+            <div class="call-meta" style="color:var(--danger);font-weight:600;">3 issues found</div>
+          </div>
+        </div>
+
+        <div class="two-col">
+          <!-- Transcript -->
+          <div>
+            <div class="transcript" id="transcript-area">
+              <!-- T1 transcript (default) -->
+              <div class="transcript-header">
+                Call Transcript &mdash; UAT-0142
+              </div>
+              <div class="transcript-line">
+                <span class="line-id">T1-01</span>
+                <span class="speaker asha">Asha</span>
+                <span class="text">Good morning, am I speaking with Mr. Arun Verma?</span>
+              </div>
+              <div class="transcript-line">
+                <span class="line-id">T1-02</span>
+                <span class="speaker customer">Customer</span>
+                <span class="text">Yes, speaking.</span>
+              </div>
+              <div class="transcript-line highlighted">
+                <span class="line-id">T1-03</span>
+                <span class="speaker asha">Asha</span>
+                <span class="text">This is Asha calling from Northstar Life Insurance. This call is recorded for quality purposes. I'm calling about your policy ending 4471. Your renewal premium of &#8377;24,500 is due on <strong style="color:var(--danger)">March 5th</strong>.</span>
+              </div>
+              <div class="transcript-line">
+                <span class="line-id">T1-04</span>
+                <span class="speaker customer">Customer</span>
+                <span class="text">March? I thought it was May.</span>
+              </div>
+              <div class="transcript-line highlighted">
+                <span class="line-id">T1-05</span>
+                <span class="speaker asha">Asha</span>
+                <span class="text">I understand. As per our records the due date is <strong style="color:var(--danger)">March 5th, 2026</strong>. Would you like to pay now through a secure link?</span>
+              </div>
+              <div class="transcript-line">
+                <span class="line-id">T1-06</span>
+                <span class="speaker customer">Customer</span>
+                <span class="text">No, no. My policy document says 3rd May.</span>
+              </div>
+              <div class="transcript-line">
+                <span class="line-id">T1-07</span>
+                <span class="speaker asha">Asha</span>
+                <span class="text">I apologise for the confusion. I will note your concern. Is there anything else I can help with?</span>
+              </div>
+              <div class="transcript-line">
+                <span class="line-id">T1-08</span>
+                <span class="speaker customer">Customer</span>
+                <span class="text">Is there a grace period if I'm late?</span>
+              </div>
+              <div class="transcript-line">
+                <span class="line-id">T1-09</span>
+                <span class="speaker asha">Asha</span>
+                <span class="text">Yes. There is a grace period of 30 days after the due date, during which your cover continues.</span>
+              </div>
+              <div class="transcript-line">
+                <span class="line-id">T1-10</span>
+                <span class="speaker customer">Customer</span>
+                <span class="text">Okay. Send me the link, I'll check.</span>
+              </div>
+              <div class="transcript-line">
+                <span class="line-id">T1-11</span>
+                <span class="speaker asha">Asha</span>
+                <span class="text">I've sent the payment link to your registered mobile number. Thank you for your time.</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Post-call data + linked issues -->
+          <div>
+            <div class="postcall-data" id="postcall-area">
+              <h4 style="font-size:13px;font-weight:700;margin-bottom:12px;">Post-Call Data (T1-POST)</h4>
+              <div class="postcall-row">
+                <span class="label">Disposition</span>
+                <span class="value">Payment link sent &mdash; Follow-up</span>
+              </div>
+              <div class="postcall-row">
+                <span class="label">Lead: due_date</span>
+                <span class="value mismatch">03/05/2026 <span style="font-size:11px;">&larr; ambiguous DD/MM vs MM/DD</span></span>
+              </div>
+              <div class="postcall-row">
+                <span class="label">Callback requested</span>
+                <span class="value">No</span>
+              </div>
+            </div>
+
+            <div style="margin-top:16px;">
+              <h4 style="font-size:13px;font-weight:700;margin-bottom:8px;">Linked Issues</h4>
+              <div class="linked-issue" onclick="showScreen('issue-detail', 'ISS-001')">
+                <span class="badge badge-critical">Critical</span>
+                <span>ISS-001: Wrong due date read out</span>
+                <span class="badge badge-reopened" style="margin-left:auto;">Reopened</span>
+              </div>
+            </div>
+
+            <div style="margin-top:16px;">
+              <div class="duplicate-alert">
+                <span class="alert-icon">&#9888;</span>
+                <div>
+                  <strong>Data mismatch detected</strong><br>
+                  <span style="font-size:12px;">Asha says "March 5th" (T1-03) but lead record shows 03/05/2026 (DD/MM = 3 May). The agent is misreading the date format.</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== S03: REPORT ISSUE ===== -->
+    <div class="screen" id="screen-report">
+      <div class="topbar">
+        <h2>Report New Issue</h2>
+        <div class="topbar-actions"></div>
+      </div>
+      <div class="content">
+        <div class="screen-id">S03</div>
+        <span class="back-link" onclick="showScreen('dashboard')">&larr; Back to Dashboard</span>
+
+        <div class="two-col">
+          <div>
+            <div class="card">
+              <div class="card-header">
+                <h3>Issue Details</h3>
+              </div>
+              <div class="card-body">
+                <div class="form-row">
+                  <div class="form-group">
+                    <label>Test Call ID</label>
+                    <select id="report-call-id">
+                      <option value="">Select a call...</option>
+                      <option value="UAT-0142">UAT-0142 (2 Nov, Sameer)</option>
+                      <option value="UAT-0157">UAT-0157 (2 Nov, Anjali)</option>
+                      <option value="UAT-0163">UAT-0163 (4 Nov, Priya)</option>
+                      <option value="UAT-0171">UAT-0171 (4 Nov, Sameer)</option>
+                      <option value="UAT-0172">UAT-0172 (4 Nov, Anjali)</option>
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <label>Reporter</label>
+                    <input type="text" value="Priya Nair" class="prefilled" readonly>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label>Issue Title</label>
+                  <input type="text" placeholder="Brief, specific description of what went wrong">
+                </div>
+
+                <div class="form-group">
+                  <label>Description</label>
+                  <textarea placeholder="What happened? What should have happened instead? Reference specific transcript lines (e.g. T1-03)."></textarea>
+                </div>
+
+                <div class="form-row">
+                  <div class="form-group">
+                    <label>Severity</label>
+                    <select>
+                      <option value="">Select...</option>
+                      <option value="critical">Critical &mdash; Blocks go-live</option>
+                      <option value="high">High &mdash; Major impact</option>
+                      <option value="medium">Medium &mdash; Moderate impact</option>
+                      <option value="low">Low &mdash; Minor issue</option>
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <label>Category</label>
+                    <select>
+                      <option value="">Select...</option>
+                      <option value="data">Data Mismatch</option>
+                      <option value="conversation">Conversation Flow</option>
+                      <option value="compliance">Compliance / Disclosure</option>
+                      <option value="audio">Audio Quality</option>
+                      <option value="postcall">Post-Call Data</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label>Affected Transcript Lines</label>
+                  <input type="text" placeholder="e.g. T1-03, T1-05">
+                </div>
+
+                <div class="form-group">
+                  <label style="display:flex;align-items:center;gap:8px;">
+                    <input type="checkbox" id="compliance-check">
+                    <span style="text-transform:none;font-size:13px;">This issue involves regulatory wording or mandatory disclosures</span>
+                  </label>
+                </div>
+
+                <div id="compliance-note" style="display:none;">
+                  <div class="compliance-flag">
+                    <span style="font-size:18px;">&#128274;</span>
+                    <div>
+                      <strong>Compliance review required</strong><br>
+                      <span style="font-size:12px;">This issue will be routed to Deepa Iyer (Compliance) for review before any fix can go live.</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div style="display:flex;gap:12px;margin-top:20px;">
+                  <button class="btn btn-primary" onclick="submitIssue()">Submit Issue</button>
+                  <button class="btn btn-secondary" onclick="showScreen('dashboard')">Cancel</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Duplicate detection panel -->
+          <div>
+            <div class="card">
+              <div class="card-header">
+                <h3>Possible Duplicates</h3>
+              </div>
+              <div class="card-body" id="duplicate-panel">
+                <div class="duplicate-alert">
+                  <span class="alert-icon">&#128269;</span>
+                  <div>
+                    <strong>Check before submitting</strong><br>
+                    <span style="font-size:12px;">As you type, we'll check for existing issues that might describe the same problem.</span>
+                  </div>
+                </div>
+
+                <div style="margin-top:12px;">
+                  <div style="font-size:12px;font-weight:700;color:var(--gray-500);margin-bottom:8px;">SIMILAR OPEN ISSUES</div>
+                  <div class="linked-issue" onclick="showScreen('issue-detail', 'ISS-001')">
+                    <span class="badge badge-critical" style="font-size:10px;">CRIT</span>
+                    <div>
+                      <div style="font-weight:600;font-size:13px;">ISS-001: Wrong due date read out</div>
+                      <div style="font-size:11px;color:var(--gray-500);">Reopened &middot; UAT-0142</div>
+                    </div>
+                  </div>
+                  <div style="font-size:12px;color:var(--gray-500);margin-top:8px;padding:8px;background:var(--warning-light);border-radius:6px;">
+                    <strong>Note:</strong> F05 (Sameer) and F07 (Anjali) were merged into ISS-001 as duplicates of the same date format bug.
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== S04: ISSUE DETAIL ===== -->
+    <div class="screen" id="screen-issue-detail">
+      <div class="topbar">
+        <h2>Issue Detail</h2>
+        <div class="topbar-actions">
+          <button class="btn btn-secondary" onclick="showScreen('calls')">View Call</button>
+          <button class="btn btn-primary" onclick="showScreen('retest')">Start Retest</button>
+        </div>
+      </div>
+      <div class="content">
+        <div class="screen-id">S04</div>
+        <div class="breadcrumb">
+          <a onclick="showScreen('dashboard')">Dashboard</a> &rsaquo; ISS-001
+        </div>
+
+        <div class="two-col">
+          <div>
+            <!-- Issue header -->
+            <div class="card" style="margin-bottom:20px;">
+              <div class="card-body">
+                <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;flex-wrap:wrap;">
+                  <span style="font-family:monospace;font-weight:700;font-size:14px;color:var(--gray-500);">ISS-001</span>
+                  <span class="badge badge-critical">Critical</span>
+                  <span class="badge badge-reopened">Reopened</span>
+                  <span class="badge badge-data">Data Mismatch</span>
+                </div>
+
+                <h2 style="font-size:18px;margin-bottom:8px;">Wrong due date read out to customer</h2>
+
+                <p style="font-size:14px;color:var(--gray-600);line-height:1.6;margin-bottom:16px;">
+                  Asha reads the due date as "March 5th" when the lead record shows 03/05/2026 (which in DD/MM format = 3rd May 2026). The customer confirms their policy document says 3rd May. <strong>Root cause:</strong> the system stores dates in DD/MM/YYYY but the agent reads them as MM/DD/YYYY.
+                </p>
+
+                <div style="display:flex;gap:24px;font-size:12px;color:var(--gray-500);">
+                  <div><strong>Reporter:</strong> Priya Nair</div>
+                  <div><strong>Reported:</strong> 2 Nov 2026</div>
+                  <div><strong>Calls:</strong> UAT-0142, UAT-0165, UAT-0168, UAT-0171</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Merged duplicates -->
+            <div class="card" style="margin-bottom:20px;">
+              <div class="card-header">
+                <h3>Merged Reports (Duplicates)</h3>
+              </div>
+              <div class="card-body">
+                <div style="font-size:13px;color:var(--gray-600);margin-bottom:12px;">
+                  These reports from different testers describe the same root cause and have been linked:
+                </div>
+                <div class="linked-issue" style="cursor:default;">
+                  <span style="font-family:monospace;font-size:11px;color:var(--gray-400);">F01</span>
+                  <span>Priya: "Wrong due date read out" (UAT-0142)</span>
+                  <span style="font-size:11px;color:var(--gray-400);margin-left:auto;">2 Nov</span>
+                </div>
+                <div class="linked-issue" style="cursor:default;">
+                  <span style="font-family:monospace;font-size:11px;color:var(--gray-400);">F05</span>
+                  <span>Sameer: "Date is wrong, said March" (UAT-0165)</span>
+                  <span style="font-size:11px;color:var(--gray-400);margin-left:auto;">3 Nov</span>
+                </div>
+                <div class="linked-issue" style="cursor:default;">
+                  <span style="font-family:monospace;font-size:11px;color:var(--gray-400);">F07</span>
+                  <span>Anjali: "Due date mismatch vs policy document" (UAT-0168)</span>
+                  <span style="font-size:11px;color:var(--gray-400);margin-left:auto;">3 Nov</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Transcript excerpt -->
+            <div class="card" style="margin-bottom:20px;">
+              <div class="card-header">
+                <h3>Relevant Transcript Excerpt</h3>
+                <span style="font-size:11px;color:var(--gray-500);">UAT-0142</span>
+              </div>
+              <div class="card-body" style="padding:0;">
+                <div class="transcript-line highlighted">
+                  <span class="line-id">T1-03</span>
+                  <span class="speaker asha">Asha</span>
+                  <span class="text">...Your renewal premium of &#8377;24,500 is due on <strong style="color:var(--danger)">March 5th</strong>.</span>
+                </div>
+                <div class="transcript-line">
+                  <span class="line-id">T1-04</span>
+                  <span class="speaker customer">Customer</span>
+                  <span class="text">March? I thought it was May.</span>
+                </div>
+                <div class="transcript-line">
+                  <span class="line-id">T1-06</span>
+                  <span class="speaker customer">Customer</span>
+                  <span class="text">No, no. My policy document says 3rd May.</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right column: timeline + retest -->
+          <div>
+            <div class="card" style="margin-bottom:20px;">
+              <div class="card-header">
+                <h3>Status History</h3>
+              </div>
+              <div class="card-body">
+                <div class="timeline">
+                  <div class="timeline-item reopened">
+                    <div class="time">4 Nov, 11:02 AM</div>
+                    <div class="event"><strong>Reopened</strong> by Sameer Khan</div>
+                    <div style="font-size:12px;color:var(--gray-500);margin-top:4px;">
+                      Retest on UAT-0171: date was correct on first call but wrong again on second call. Fix is intermittent.
+                    </div>
+                  </div>
+                  <div class="timeline-item fixed">
+                    <div class="time">3 Nov, 1:15 PM</div>
+                    <div class="event"><strong>Marked Fixed</strong> by vendor (Build #2)</div>
+                    <div style="font-size:12px;color:var(--gray-500);margin-top:4px;">
+                      Karthik: "#1 is fixed in today's build"
+                    </div>
+                  </div>
+                  <div class="timeline-item open">
+                    <div class="time">2 Nov, 7:40 PM</div>
+                    <div class="event"><strong>Reported</strong> by Priya Nair</div>
+                    <div style="font-size:12px;color:var(--gray-500);margin-top:4px;">
+                      Evidence: T1-03, T1-05, T1-POST
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Retest card -->
+            <div class="retest-card" onclick="showScreen('retest')">
+              <h4>&#9654; Start Retest</h4>
+              <p>Verify the fix on the latest build</p>
+            </div>
+
+            <div class="card" style="margin-top:16px;">
+              <div class="card-header">
+                <h3>Retest History</h3>
+              </div>
+              <div class="card-body">
+                <div style="padding:10px 0;border-bottom:1px solid var(--gray-100);">
+                  <div style="display:flex;justify-content:space-between;align-items:center;">
+                    <div>
+                      <div style="font-size:13px;font-weight:700;">Retest #1</div>
+                      <div style="font-size:11px;color:var(--gray-500);">Sameer &middot; 4 Nov &middot; Build #2</div>
+                    </div>
+                    <span class="badge badge-high" style="background:#fef2f2;color:#991b1b;">FAIL</span>
+                  </div>
+                  <div style="font-size:12px;color:var(--gray-600);margin-top:6px;">
+                    UAT-0171: First call OK, second call still showed March. Intermittent bug.
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== S05: RETEST VERDICT ===== -->
+    <div class="screen" id="screen-retest">
+      <div class="topbar">
+        <h2>Record Retest Verdict</h2>
+        <div class="topbar-actions"></div>
+      </div>
+      <div class="content">
+        <div class="screen-id">S05</div>
+        <span class="back-link" onclick="showScreen('issue-detail')">&larr; Back to ISS-001</span>
+
+        <div class="two-col">
+          <div>
+            <div class="card" style="margin-bottom:20px;">
+              <div class="card-header">
+                <h3>Issue Being Retested</h3>
+              </div>
+              <div class="card-body">
+                <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
+                  <span style="font-family:monospace;font-weight:700;">ISS-001</span>
+                  <span class="badge badge-critical">Critical</span>
+                  <span class="badge badge-reopened">Reopened</span>
+                </div>
+                <h3 style="font-size:16px;margin-bottom:4px;">Wrong due date read out to customer</h3>
+                <p style="font-size:13px;color:var(--gray-600);">Agent reads DD/MM date as MM/DD, tells customer "March 5th" instead of "3rd May".</p>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="card-header">
+                <h3>Retest Details</h3>
+              </div>
+              <div class="card-body">
+                <div class="form-row">
+                  <div class="form-group">
+                    <label>Build Number</label>
+                    <input type="text" placeholder="e.g. Build #3" value="Build #3">
+                  </div>
+                  <div class="form-group">
+                    <label>Retest Call ID</label>
+                    <select>
+                      <option value="">Select the test call...</option>
+                      <option value="UAT-0180" selected>UAT-0180 (today)</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label>Verdict</label>
+                </div>
+
+                <div class="verdict-buttons">
+                  <div class="verdict-btn" onclick="selectVerdict('pass', this)" id="verdict-pass">
+                    <div class="icon">&#10004;</div>
+                    <div class="label">Pass</div>
+                    <div class="desc">Fix works correctly. Issue resolved.</div>
+                  </div>
+                  <div class="verdict-btn" onclick="selectVerdict('fail', this)" id="verdict-fail">
+                    <div class="icon">&#10008;</div>
+                    <div class="label">Fail</div>
+                    <div class="desc">Issue persists or partially fixed.</div>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label>Retest Notes</label>
+                  <textarea placeholder="Describe what you tested and what you observed. Reference specific call lines if relevant.">Tested 3 calls with different policy records. All three showed correct date in DD/MM format. Due date matched policy documents. Fix confirmed.</textarea>
+                </div>
+
+                <div style="display:flex;gap:12px;margin-top:20px;">
+                  <button class="btn btn-success" onclick="submitVerdict()">Submit Verdict</button>
+                  <button class="btn btn-secondary" onclick="showScreen('issue-detail')">Cancel</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right: previous retests -->
+          <div>
+            <div class="card">
+              <div class="card-header">
+                <h3>Previous Retests</h3>
+              </div>
+              <div class="card-body">
+                <div style="padding:10px 0;">
+                  <div style="display:flex;justify-content:space-between;align-items:center;">
+                    <div>
+                      <div style="font-size:13px;font-weight:700;">Retest #1</div>
+                      <div style="font-size:11px;color:var(--gray-500);">Sameer Khan &middot; 4 Nov &middot; Build #2</div>
+                    </div>
+                    <span class="badge" style="background:#fef2f2;color:#991b1b;">FAIL</span>
+                  </div>
+                  <div style="font-size:12px;color:var(--gray-600);margin-top:6px;">
+                    UAT-0171: First call correct, second call wrong. Intermittent.
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div style="margin-top:20px;padding:16px;background:var(--info-light);border-radius:8px;font-size:13px;color:var(--info);">
+              <strong>Tip:</strong> Make at least 2-3 test calls to catch intermittent issues. ISS-001 passed on the first retest call but failed on the second.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== S06: GO-LIVE READINESS ===== -->
+    <div class="screen" id="screen-readiness">
+      <div class="topbar">
+        <h2>Go-Live Readiness</h2>
+        <div class="topbar-actions">
+          <span style="font-size:12px;color:var(--gray-500);">For: Rahul Mehta, Head of Renewals</span>
+        </div>
+      </div>
+      <div class="content">
+        <div class="screen-id">S06</div>
+        <span class="back-link" onclick="showScreen('dashboard')">&larr; Back to Dashboard</span>
+
+        <!-- Readiness banner -->
+        <div class="readiness-banner">
+          <div class="icon">&#9888;</div>
+          <div class="text">
+            <h4>NOT READY FOR GO-LIVE</h4>
+            <p>4 critical/high open issues remain. 1 compliance item needs review.</p>
+          </div>
+        </div>
+
+        <div class="two-col-equal">
+          <!-- Left: blockers -->
+          <div>
+            <div class="card" style="margin-bottom:20px;">
+              <div class="card-header" style="background:var(--danger-light);">
+                <h3 style="color:var(--danger);">Open Blockers (4)</h3>
+              </div>
+              <div class="card-body">
+                <ul class="blocker-list">
+                  <li onclick="showScreen('issue-detail', 'ISS-001')" style="cursor:pointer;">
+                    <span class="badge badge-critical" style="font-size:10px;">CRIT</span>
+                    <div>
+                      <div style="font-weight:700;font-size:13px;">ISS-001: Wrong due date (Reopened)</div>
+                      <div style="font-size:11px;color:var(--gray-500);">Date format bug. Fix was intermittent.</div>
+                    </div>
+                  </li>
+                  <li>
+                    <span class="badge badge-critical" style="font-size:10px;">CRIT</span>
+                    <div>
+                      <div style="font-weight:700;font-size:13px;">ISS-003: Pushes payment link after "I paid"</div>
+                      <div style="font-size:11px;color:var(--gray-500);">Vendor did not confirm fix (E2 only mentions #1, #2, #4).</div>
+                    </div>
+                  </li>
+                  <li>
+                    <span class="badge badge-high" style="font-size:10px;">HIGH</span>
+                    <div>
+                      <div style="font-weight:700;font-size:13px;">ISS-005: Wrong disposition recorded</div>
+                      <div style="font-size:11px;color:var(--gray-500);">System says "Payment link sent" when customer refused.</div>
+                    </div>
+                  </li>
+                  <li>
+                    <span class="badge badge-high" style="font-size:10px;">HIGH</span>
+                    <div>
+                      <div style="font-weight:700;font-size:13px;">ISS-008: DNC not captured</div>
+                      <div style="font-size:11px;color:var(--gray-500);">"Don't call again" not recorded as Do Not Call.</div>
+                    </div>
+                  </li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="card-header" style="background:#faf5ff;">
+                <h3 style="color:#6b21a8;">Compliance Items (1)</h3>
+              </div>
+              <div class="card-body">
+                <ul class="blocker-list">
+                  <li>
+                    <span class="badge badge-compliance" style="font-size:10px;">COMP</span>
+                    <div>
+                      <div style="font-weight:700;font-size:13px;">ISS-007: Missing disclosure on Hindi calls</div>
+                      <div style="font-size:11px;color:var(--gray-500);">Mandatory "call is recorded" absent. Awaiting Deepa Iyer review.</div>
+                    </div>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right: summary -->
+          <div>
+            <div class="card" style="margin-bottom:20px;">
+              <div class="card-header">
+                <h3>Resolution Progress</h3>
+              </div>
+              <div class="card-body">
+                <div style="margin-bottom:16px;">
+                  <div style="display:flex;justify-content:space-between;font-size:13px;font-weight:700;">
+                    <span>Overall</span>
+                    <span>2 of 8 verified (25%)</span>
+                  </div>
+                  <div class="progress-bar">
+                    <div class="progress-fill" style="width:25%;background:var(--success);"></div>
+                  </div>
+                </div>
+
+                <div style="margin-bottom:12px;">
+                  <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px;">
+                    <span style="color:var(--gray-500);">Critical issues</span>
+                    <span style="font-weight:700;color:var(--danger);">0 / 4 resolved</span>
+                  </div>
+                  <div class="progress-bar">
+                    <div class="progress-fill" style="width:0%;background:var(--danger);"></div>
+                  </div>
+                </div>
+
+                <div style="margin-bottom:12px;">
+                  <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px;">
+                    <span style="color:var(--gray-500);">High issues</span>
+                    <span style="font-weight:700;color:var(--warning);">0 / 3 resolved</span>
+                  </div>
+                  <div class="progress-bar">
+                    <div class="progress-fill" style="width:0%;background:var(--warning);"></div>
+                  </div>
+                </div>
+
+                <div style="margin-bottom:12px;">
+                  <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px;">
+                    <span style="color:var(--gray-500);">Medium issues</span>
+                    <span style="font-weight:700;color:var(--success);">1 / 1 resolved</span>
+                  </div>
+                  <div class="progress-bar">
+                    <div class="progress-fill" style="width:100%;background:var(--success);"></div>
+                  </div>
+                </div>
+
+                <div>
+                  <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px;">
+                    <span style="color:var(--gray-500);">Low issues</span>
+                    <span style="font-weight:700;color:var(--success);">1 / 1 resolved</span>
+                  </div>
+                  <div class="progress-bar">
+                    <div class="progress-fill" style="width:100%;background:var(--success);"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="card-header">
+                <h3>UAT Summary</h3>
+              </div>
+              <div class="card-body" style="font-size:13px;line-height:1.7;">
+                <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--gray-100);">
+                  <span style="color:var(--gray-500);">Test calls completed</span>
+                  <strong>7</strong>
+                </div>
+                <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--gray-100);">
+                  <span style="color:var(--gray-500);">Unique issues found</span>
+                  <strong>8</strong>
+                </div>
+                <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--gray-100);">
+                  <span style="color:var(--gray-500);">Duplicate reports merged</span>
+                  <strong>3</strong>
+                </div>
+                <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--gray-100);">
+                  <span style="color:var(--gray-500);">Builds tested</span>
+                  <strong>2</strong>
+                </div>
+                <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--gray-100);">
+                  <span style="color:var(--gray-500);">Testers</span>
+                  <strong>3</strong>
+                </div>
+                <div style="display:flex;justify-content:space-between;padding:6px 0;">
+                  <span style="color:var(--gray-500);">UAT deadline</span>
+                  <strong style="color:var(--danger);">Next Friday</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div> <!-- /main -->
+</div> <!-- /app -->
+
+<!-- Toast notification -->
+<div class="toast" id="toast"></div>
+
+<script>
+  // Screen navigation
+  function showScreen(screenId, data) {
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    const screen = document.getElementById('screen-' + screenId);
+    if (screen) screen.classList.add('active');
+
+    // Update sidebar
+    document.querySelectorAll('.sidebar-nav li').forEach(li => li.classList.remove('active'));
+    const navMap = {
+      'dashboard': 0, 'calls': 1, 'report': 2, 'readiness': 3,
+      'issue-detail': 0, 'retest': 0
+    };
+    const idx = navMap[screenId];
+    if (idx !== undefined) {
+      document.querySelectorAll('.sidebar-nav li')[idx].classList.add('active');
+    }
+
+    window.scrollTo(0, 0);
+  }
+
+  // Filter issues
+  function filterIssues(status, btn) {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+
+    document.querySelectorAll('#issue-table tbody tr').forEach(row => {
+      if (status === 'all') {
+        row.style.display = '';
+      } else {
+        row.style.display = row.dataset.status === status ? '' : 'none';
+      }
+    });
+  }
+
+  // Call selector
+  function selectCall(callId, el) {
+    document.querySelectorAll('.call-card').forEach(c => c.classList.remove('active'));
+    el.classList.add('active');
+
+    const transcripts = {
+      'T1': `
+        <div class="transcript-header">Call Transcript &mdash; UAT-0142</div>
+        <div class="transcript-line"><span class="line-id">T1-01</span><span class="speaker asha">Asha</span><span class="text">Good morning, am I speaking with Mr. Arun Verma?</span></div>
+        <div class="transcript-line"><span class="line-id">T1-02</span><span class="speaker customer">Customer</span><span class="text">Yes, speaking.</span></div>
+        <div class="transcript-line highlighted"><span class="line-id">T1-03</span><span class="speaker asha">Asha</span><span class="text">This is Asha calling from Northstar Life Insurance. This call is recorded for quality purposes. I'm calling about your policy ending 4471. Your renewal premium of ₹24,500 is due on <strong style="color:var(--danger)">March 5th</strong>.</span></div>
+        <div class="transcript-line"><span class="line-id">T1-04</span><span class="speaker customer">Customer</span><span class="text">March? I thought it was May.</span></div>
+        <div class="transcript-line highlighted"><span class="line-id">T1-05</span><span class="speaker asha">Asha</span><span class="text">I understand. As per our records the due date is <strong style="color:var(--danger)">March 5th, 2026</strong>. Would you like to pay now through a secure link?</span></div>
+        <div class="transcript-line"><span class="line-id">T1-06</span><span class="speaker customer">Customer</span><span class="text">No, no. My policy document says 3rd May.</span></div>
+        <div class="transcript-line"><span class="line-id">T1-07</span><span class="speaker asha">Asha</span><span class="text">I apologise for the confusion. I will note your concern. Is there anything else I can help with?</span></div>
+        <div class="transcript-line"><span class="line-id">T1-08</span><span class="speaker customer">Customer</span><span class="text">Is there a grace period if I'm late?</span></div>
+        <div class="transcript-line"><span class="line-id">T1-09</span><span class="speaker asha">Asha</span><span class="text">Yes. There is a grace period of 30 days after the due date, during which your cover continues.</span></div>
+        <div class="transcript-line"><span class="line-id">T1-10</span><span class="speaker customer">Customer</span><span class="text">Okay. Send me the link, I'll check.</span></div>
+        <div class="transcript-line"><span class="line-id">T1-11</span><span class="speaker asha">Asha</span><span class="text">I've sent the payment link to your registered mobile number. Thank you for your time.</span></div>
+      `,
+      'T2': `
+        <div class="transcript-header">Call Transcript &mdash; UAT-0157</div>
+        <div class="transcript-line"><span class="line-id">T2-01</span><span class="speaker asha">Asha</span><span class="text">Hello, am I speaking with Mrs. Lydia Fernandes?</span></div>
+        <div class="transcript-line"><span class="line-id">T2-02</span><span class="speaker customer">Customer</span><span class="text">Yes.</span></div>
+        <div class="transcript-line"><span class="line-id">T2-03</span><span class="speaker asha">Asha</span><span class="text">This is Asha from Northstar Life Insurance. This call is recorded for quality purposes. Your renewal premium of ₹18,200 for policy ending 2290 is due on 20th November.</span></div>
+        <div class="transcript-line"><span class="line-id">T2-04</span><span class="speaker customer">Customer</span><span class="text">I paid it yesterday on your app.</span></div>
+        <div class="transcript-line highlighted"><span class="line-id">T2-05</span><span class="speaker asha">Asha</span><span class="text">Thank you. To avoid any lapse in cover, I can send you a secure payment link right now.</span></div>
+        <div class="transcript-line"><span class="line-id">T2-06</span><span class="speaker customer">Customer</span><span class="text">I just told you I've paid.</span></div>
+        <div class="transcript-line highlighted"><span class="line-id">T2-07</span><span class="speaker asha">Asha</span><span class="text">I understand. Payments can take up to 48 hours to reflect. Shall I send the link so you have it handy?</span></div>
+        <div class="transcript-line"><span class="line-id">T2-08</span><span class="speaker customer">Customer</span><span class="text">No. Please don't call me again about this.</span></div>
+        <div class="transcript-line"><span class="line-id">T2-09</span><span class="speaker asha">Asha</span><span class="text">Noted. Thank you for your time, have a good day.</span></div>
+      `,
+      'T3': `
+        <div class="transcript-header">Call Transcript &mdash; UAT-0163 (Hindi-English)</div>
+        <div class="transcript-line"><span class="line-id">T3-01</span><span class="speaker asha">Asha</span><span class="text">Namaste, kya main Mr. Salim Iqbal se baat kar rahi hoon? <em style="color:var(--gray-400);">[Hello, am I speaking with Mr. Salim Iqbal?]</em></span></div>
+        <div class="transcript-line"><span class="line-id">T3-02</span><span class="speaker customer">Customer</span><span class="text">Haan, boliye. <em style="color:var(--gray-400);">[Yes, go ahead.]</em></span></div>
+        <div class="transcript-line highlighted"><span class="line-id">T3-03</span><span class="speaker asha">Asha</span><span class="text">Main Asha, Northstar Life se. Aapki policy ending 8815 ka renewal premium ₹31,000, 28 November ko due hai. <em style="color:var(--gray-400);">[I'm Asha from Northstar Life...]</em> <strong style="color:var(--danger);">Missing: "This call is recorded" disclosure</strong></span></div>
+        <div class="transcript-line"><span class="line-id">T3-04</span><span class="speaker customer">Customer</span><span class="text">Dekhiye, mujhe premium ke baare mein kuch doubts hain. Fund value kitni hai abhi? <em style="color:var(--gray-400);">[Look, I have some doubts... What is the fund value?]</em></span></div>
+        <div class="transcript-line"><span class="line-id">T3-05</span><span class="speaker asha">Asha</span><span class="text">Main aapko general information de sakti hoon... <em style="color:var(--gray-400);">[I can give general information, but for exact fund value check your policy statement.]</em></span></div>
+        <div class="transcript-line"><span class="line-id">T3-06</span><span class="speaker customer">Customer</span><span class="text">Aap kisi insaan se baat karwa dijiye. <em style="color:var(--gray-400);">[I want to talk to a person.]</em></span></div>
+        <div class="transcript-line highlighted"><span class="line-id">T3-07</span><span class="speaker asha">Asha</span><span class="text">Bilkul. Main arrange karti hoon... <em style="color:var(--gray-400);">[Of course. I'll arrange for our advisor to call you back.]</em> <strong style="color:var(--danger);">Callback promised but not logged</strong></span></div>
+        <div class="transcript-line"><span class="line-id">T3-08</span><span class="speaker customer">Customer</span><span class="text">Kab tak? <em style="color:var(--gray-400);">[By when?]</em></span></div>
+        <div class="transcript-line"><span class="line-id">T3-09</span><span class="speaker asha">Asha</span><span class="text">Jaldi hi. Dhanyavaad... <em style="color:var(--gray-400);">[Soon. Thank you, have a good day.]</em></span></div>
+      `
+    };
+
+    const postcalls = {
+      'T1': `
+        <h4 style="font-size:13px;font-weight:700;margin-bottom:12px;">Post-Call Data (T1-POST)</h4>
+        <div class="postcall-row"><span class="label">Disposition</span><span class="value">Payment link sent &mdash; Follow-up</span></div>
+        <div class="postcall-row"><span class="label">Lead: due_date</span><span class="value mismatch">03/05/2026 <span style="font-size:11px;">&larr; ambiguous DD/MM vs MM/DD</span></span></div>
+        <div class="postcall-row"><span class="label">Callback requested</span><span class="value">No</span></div>
+      `,
+      'T2': `
+        <h4 style="font-size:13px;font-weight:700;margin-bottom:12px;">Post-Call Data (T2-POST)</h4>
+        <div class="postcall-row"><span class="label">Disposition</span><span class="value mismatch">Payment link sent <span style="font-size:11px;">&larr; WRONG: customer refused link and said "don't call again"</span></span></div>
+        <div class="postcall-row"><span class="label">Lead: due_date</span><span class="value">20/11/2026</span></div>
+        <div class="postcall-row"><span class="label">Callback requested</span><span class="value">No</span></div>
+      `,
+      'T3': `
+        <h4 style="font-size:13px;font-weight:700;margin-bottom:12px;">Post-Call Data (T3-POST)</h4>
+        <div class="postcall-row"><span class="label">Disposition</span><span class="value mismatch">Not interested <span style="font-size:11px;">&larr; WRONG: customer wanted callback, not uninterested</span></span></div>
+        <div class="postcall-row"><span class="label">Lead: due_date</span><span class="value">28/11/2026</span></div>
+        <div class="postcall-row"><span class="label">Callback requested</span><span class="value mismatch">(blank) <span style="font-size:11px;">&larr; Agent promised callback at T3-07</span></span></div>
+      `
+    };
+
+    document.getElementById('transcript-area').innerHTML = transcripts[callId];
+    document.getElementById('postcall-area').innerHTML = postcalls[callId];
+  }
+
+  // Report from call
+  function reportFromCall() {
+    showScreen('report');
+    const activeCall = document.querySelector('.call-card.active');
+    if (activeCall) {
+      const callId = activeCall.querySelector('.call-id').textContent;
+      const select = document.getElementById('report-call-id');
+      for (let i = 0; i < select.options.length; i++) {
+        if (select.options[i].value === callId) {
+          select.selectedIndex = i;
+          break;
+        }
+      }
+    }
+  }
+
+  // Compliance checkbox
+  document.getElementById('compliance-check').addEventListener('change', function() {
+    document.getElementById('compliance-note').style.display = this.checked ? 'block' : 'none';
+  });
+
+  // Submit issue
+  function submitIssue() {
+    showToast('Issue submitted successfully', 'success');
+    setTimeout(() => showScreen('dashboard'), 800);
+  }
+
+  // Select verdict
+  function selectVerdict(verdict, el) {
+    document.querySelectorAll('.verdict-btn').forEach(b => {
+      b.classList.remove('selected-pass', 'selected-fail');
+    });
+    el.classList.add(verdict === 'pass' ? 'selected-pass' : 'selected-fail');
+  }
+
+  // Submit verdict
+  function submitVerdict() {
+    showToast('Retest verdict recorded', 'success');
+    setTimeout(() => showScreen('issue-detail'), 800);
+  }
+
+  // Toast
+  function showToast(msg, type) {
+    const toast = document.getElementById('toast');
+    toast.textContent = msg;
+    toast.className = 'toast ' + (type || '');
+    toast.style.display = 'block';
+    setTimeout(() => toast.style.display = 'none', 2500);
+  }
+</script>
+</body>
+</html>
