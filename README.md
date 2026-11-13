@@ -10,9 +10,9 @@
 |----|------------|------|
 | A1 | Research Synthesis | `A1_Research_Synthesis.md` |
 | A2 | Tracker Content | `A2_Tracker_Content.md` |
-| A3 | Sitemap / IA | *(paper, scanned)* |
-| A4 | User Flows Guide | `A4_User_Flows_Guide.md` |
-| A5 | Rough Work | *(paper, scanned)* |
+| A3 | Sitemap / IA | `A3_Sitemap_and_Flow.jpg` |
+| A4 | User Flows Guide | `A4_User_Flows_Guide.md`, `A4_Call_Flow_Diagram.jpg` |
+| A5 | Rough Work | `A5_Rough_Work_1.jpg`, `A5_Rough_Work_2.jpg`, `A5_Rough_Work_3.jpg` |
 
 ### Phase B — Building (10%)
 | ID | Deliverable | File |
